@@ -2,10 +2,11 @@ const express = require('express');
 const cors = require('cors');
 require('./config/database');
 const app = express();
+const clienteRoutes = require('./routes/clienteRoutes');
 
 app.use(express.json());
 
-const clienteRoutes = require('./routes/clienteRoutes');
+
 app.use('/clientes', clienteRoutes);
 
 app.listen(3000, () => {
