@@ -55,8 +55,75 @@ const crearCliente = (req, res) => {
     });
 };
 
+const obtenerClientePorId = (req, res) => {
+
+    const { id } = req.params;
+    const sql = 'SELECT * FROM cliente WHERE id_cliente = ' + id;
+
+    connection.query(sql, [id], (error, resultado) => {
+
+        if (error) {
+            console.log(error);
+
+            res.status(500).json({
+                mensaje: 'Error al obtener cliente'
+            });
+
+            return;
+        }
+
+        if (resultado.length === 0) {
+            res.status(404).json({
+                mensaje: 'Cliente no encontrado'
+            });
+
+            return;
+        }
+
+        res.json(resultado[0]);
+    });
+};
+
+const actualizarCliente = (req, res) => {
+    const { id } = req.params;
+    const {nombre,apellido,correo,fecha_inscripcion} = req.body;
+
+    const sql = `   
+        UPDATE cliente
+        SET nombre = ?, apellido = ?, correo = ?, fecha_inscripcion = ?
+        WHERE id_cliente = ?`;
+
+    connection.query(sql, [nombre,apellido,correo,fecha_inscripcion,id] ,(error, resultado) => {
+
+        if (error) {
+            console.log(error);
+
+            res.status(500).json({
+                mensaje: 'Error al actualizar cliente'
+            });
+
+            return
+        }
+
+        if(resultado.affectedRows === 0) {
+            res.status(404).json({
+                mensaje: 'El cliente no existe'
+            });
+
+            return;
+        }
+
+        res.json({
+            mensaje: 'Cliente actualizado correctamente',     
+        });
+    
+    });
+}
+
 
 module.exports = {
     obtenerClientes,
     crearCliente,
+    obtenerClientePorId,
+    actualizarCliente
 };
